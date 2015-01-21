@@ -1,0 +1,45 @@
+
+//TIMER1 CONFIGURATION:
+    T1CONbits.TCKPS=3;
+    TMR1=0;
+    PR1=128;
+    T1CONbits.TCS=0;    //clock from fcy
+    IFS0bits.T1IF=0;    //timer 1 interrupt flag - clear
+    IEC0bits.T1IE=1;    //enable
+    T1CONbits.TON=1;
+
+void _ISR _T1Interrupt(void)
+{
+
+    IFS0bits.T1IF=0;    //clear flag
+    //LATB^=(1<<14);
+}
+
+
+//RTCC CONFIGURATION:
+asm volatile("push w7");
+    asm volatile("push w8");
+    asm volatile("disi #5");
+    asm volatile("mov #0x55, w7");
+    asm volatile("mov w7, _NVMKEY");
+    asm volatile("mov #0xAA, w8");
+    asm volatile("mov w8, _NVMKEY");
+    asm volatile("bset _RCFGCAL, #13"); //set the RTCWREN bit
+    asm volatile("pop w8");
+    asm volatile("pop w7");
+
+    ALCFGRPTbits.ARPT=0x01;
+    ALCFGRPTbits.CHIME=1; //unlimited number of alarms
+    ALCFGRPTbits.AMASK=1; //alarm every 0,5[s]
+    //RCFGCALbits.RTCPTR=3;
+    RCFGCALbits.RTCEN=1;
+    IPC15bits.RTCIP=2;
+    IFS3bits.RTCIF=0;
+    IEC3bits.RTCIE=1;     //RTC interrupt enabled
+    ALCFGRPTbits.ALRMEN=1;//alarm enabled
+
+void _ISR _RTCCInterrupt(void)
+{
+    IFS3bits.RTCIF=0;
+    LATB^=(1<<14);
+}

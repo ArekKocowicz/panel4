@@ -1,0 +1,457 @@
+        /*sprintf(strBuf,"%02d:%02d:%02d",currentTime.hour,currentTime.minute,currentTime.second);
+        lcdGoToXY(80,0);
+        lcdPutString(strBuf);
+        lcdGoToXY(4,0);
+        lcdPutChar(0+batteryLevel);
+        batteryLevel++;
+        if(batteryLevel>=7)
+            batteryLevel=0;*/
+        /*lcdGoToXY(4,2);
+        lcdPutString("08:00 - 50ml");
+        lcdGoToXY(4,3);
+        lcdPutString("14:30 -  0ml");
+        lcdGoToXY(4,4);
+        lcdPutString("20:00 - 50ml");*/
+
+        //uartSendStr("dupa\n");
+
+        /*
+        TRISCbits.TRISC2=0;  //T5 as output (secondary ADC channel
+        TRISBbits.TRISB3=0;  //T2 as output
+        TRISBbits.TRISB2=0;  //T1 as output
+
+        AD1PCFGbits.PCFG8=0; //analog (don't want to disable ADC)
+        AD1PCFGbits.PCFG5=0; //analog (don't want to disable ADC)
+        AD1PCFGbits.PCFG4=0; //T1 analog (don't want to disable ADC)
+
+        PORTCbits.RC2=1;     //pull to high
+        PORTBbits.RB3=0;     //pull to GND
+        PORTBbits.RB2=0;     //pull to GND
+
+        blockingWait10us(1);
+        enableADC();
+        sampleADC(8);        //sample VDD
+        TRISBbits.TRISB2=1;  //T1 as input
+        result=readADC(4);
+        */
+
+
+
+
+    /*
+    asm("  mov       #0x78,w1   ");
+    asm("  mov       #0x9A,w2   ");
+    asm("  mov       #OSCCONH,w3  "); //pointer to OSCCONH
+    asm("  mov       #0x01,w0     "); //fast RC with PLL
+    asm("  mov.b     w1,[w3]      "); //unlock step 1
+    asm("  mov.b     w2,[w3]      "); //unlock step 2
+    asm("  mov.b     w0,[w3]      "); //write #0x03 to OSCCONH
+
+    asm("  mov       #0x46,w1   ");
+    asm("  mov       #0x57,w2   ");
+    asm("  mov       #OSCCONL,w3  "); //pointer to OSCCONH
+    asm("  mov.b     w1,[w3]      "); //unlock step 1
+    asm("  mov.b     w2,[w3]      "); //unlock step 2
+    asm("  bset      OSCCON,#0");
+    */
+
+
+
+
+    /*
+    AD1PCFGbits.PCFG4=1; //interrupt on change configuration
+    TRISB |= (1<<2);     //flow sensor input
+    CNPU1bits.CN6PUE=0;
+    CNEN1bits.CN6IE=1;   //enable interrupts from this change input
+    IFS1bits.CNIF=0;     //clear flag
+    IEC1bits.CNIE=1;     //eneable CNI at all
+    */
+
+
+
+    while(0)
+    {
+        if(doTouchFlag)
+        {
+            doTouchFlag=0;
+            TRISCbits.TRISC2=0;  //T5 as output (secondary ADC channel
+            AD1PCFGbits.PCFG8=0; //analog (don't want to disable ADC)
+            PORTCbits.RC2=1;     //pull to high
+            TRISBbits.TRISB3=0;  //T2 as output
+            AD1PCFGbits.PCFG5=0; //analog (don't want to disable ADC)
+            PORTBbits.RB3=0;     //pull to GND
+            AD1PCFGbits.PCFG4=0; //T1 analog (don't want to disable ADC)
+            PORTBbits.RB2=0;     //pull to GND
+
+            TRISBbits.TRISB2=0;  //T1 as output
+            blockingWait10us(1);
+            enableADC();
+            sampleADC(8);        //sample VDD
+            TRISBbits.TRISB2=1;  //T1 as input
+            result=readADC(4);
+
+            strBuf[0]=0;
+            strBuf[1]=0;
+            strBuf[2]=0;
+            strBuf[3]=0;
+            strBuf[4]=0;
+            strBuf[5]=0;
+
+            sprintf(strBuf,"%d\n",result);
+            uartSendStr(strBuf);
+        }
+    }
+
+
+    currentTime.second=0;
+    currentTime.minute=0;
+    currentTime.hour=0;
+
+
+
+
+    /*static int rtcMsInSecond=0;
+    rtcMsInSecond++;
+    if(rtcMsInSecond>=1000)
+    {
+        rtcMsInSecond=0;
+        currentTime.second++;
+        if(currentTime.second>=60)
+        {
+            currentTime.second=0;
+            currentTime.minute++;
+            if(currentTime.minute>=60)
+            {
+                currentTime.minute=0;
+                currentTime.hour++;
+                    if(currentTime.hour>=24)
+                    currentTime.hour=0;
+            }
+        }
+    }
+
+    msTimer++;*/
+
+
+/*
+    rtccTimeDate RtccTimeDate ,RtccAlrmTimeDate, Rtcc_read_TimeDate ;
+
+    mRtcc_Clear_Intr_Status_Bit;
+    RtccInitClock();       								//turn on clock source
+   RtccWrOn();
+   mRtccSetInt(1);
+   RtccTimeDate.f.hour = 1;								//Set Hour
+   RtccTimeDate.f.min =  0;								//Set minute
+   RtccTimeDate.f.sec =  0;								//Set second
+   RtccTimeDate.f.mday = 4;							//Set day
+   RtccTimeDate.f.mon =  4;							//Se month
+   RtccTimeDate.f.year = 9; 							//set year
+   RtccTimeDate.f.wday = 6;
+   //Set the alarm time and date using gloabl structures defined in libraries
+   RtccAlrmTimeDate.f.hour = RtccTimeDate.f.hour;		//Set Hour
+   RtccAlrmTimeDate.f.min =  RtccTimeDate.f.min ;		//Set minute
+   RtccAlrmTimeDate.f.sec =  RtccTimeDate.f.sec + 4;            //alarm after ten seconds
+   RtccAlrmTimeDate.f.mday = RtccTimeDate.f.mday;		//Set day
+   RtccAlrmTimeDate.f.wday = RtccTimeDate.f.wday;		//Set which day of the week for the corrsponding date
+   RtccAlrmTimeDate.f.mon =  RtccTimeDate.f.mon;		//Se month
+   RtccAlrmTimeDate.f.year = RtccTimeDate.f.year;		//set year
+
+   RtccWriteTimeDate(&RtccTimeDate,1);				//write into registers
+   RtccSetAlarmRpt(RTCC_RPT_SEC,1);				//Set the alarm repeat to every minute
+   RtccSetAlarmRptCount(5,1);					//set alarm repeat count
+   //RtccWriteAlrmTimeDate(&RtccAlrmTimeDate);			//write the time for alarm into alarm registers
+   mRtccOn();							//enable the rtcc
+   mRtccAlrmEnable();
+  */
+
+    asm volatile("push w7");
+    asm volatile("push w8");
+    asm volatile("disi #5");
+    asm volatile("mov #0x55, w7");
+    asm volatile("mov w7, _NVMKEY");
+    asm volatile("mov #0xAA, w8");
+    asm volatile("mov w8, _NVMKEY");
+    asm volatile("bset _RCFGCAL, #13"); //set the RTCWREN bit
+    asm volatile("pop w8");
+    asm volatile("pop w7");
+
+    ALCFGRPTbits.ARPT=0x20;
+    ALCFGRPTbits.CHIME=0; //unlimited number of alarms
+    ALCFGRPTbits.AMASK=0; //alarm every 0,5[s]
+    //RCFGCALbits.RTCPTR=3;
+    RCFGCALbits.RTCEN=1;
+    IPC15bits.RTCIP=2;
+    IFS3bits.RTCIF=0;
+    IEC3bits.RTCIE=1;     //RTC interrupt enabled
+    ALCFGRPTbits.ALRMEN=1;//alarm enabled
+
+
+
+flowInit();
+    uartSetup();
+    timingInit();
+    lcdInitSPI();
+    blockingWait10us(25000);
+
+    AD1PCFGLbits.PCFG10=0;
+    TRISBbits.TRISB14=0; //backlight enable
+    PORTBbits.RB14=0;
+
+    lcdInitLCD();
+    lcdClear(0x00);
+
+    lcdGoToXY(5,0);
+    lcdPutString("calibrating...", 0xFF);
+
+    i=0;
+    touchIdle[0]=0;
+    touchIdle[1]=0;
+    touchIdle[2]=0;
+    while(i<32)
+    {
+        touchIdle[0]+=readTouch(0);
+        touchIdle[1]+=readTouch(1);
+        touchIdle[2]+=readTouch(2);
+        i++;
+        blockingWaitMs(16);
+    }
+
+    for(i=0;i<3;i++)
+    {
+        touchIdle[i]/=32; //calculate average value
+        lcdGoToXY(5,i+1);
+        sprintf(strBuf,"%4d  ",touchIdle[i]);
+        lcdPutString(strBuf, 0); //display average value
+    }
+    blockingWaitMs(500);
+    lcdClear(0x00);
+
+    //initialize screen
+
+    for(i=0;i<SCREEN_NUMBER_OF_ITEMS;i++)
+    {
+        screenItems[i].status=SCREEN_ITEM_STATUS_UPDATED;
+        screenItems[i].x=10;
+        screenItems[i].y=i;
+        screenItems[i].value=16;
+        sprintf(screenItems[i].strContent,"item %3d", screenItems[i].value);
+    }
+
+    strcpy(screenItems[0].caption,"ss");
+    strcpy(screenItems[1].caption,"mm");
+    strcpy(screenItems[2].caption,"hh");
+    strcpy(screenItems[3].caption,"hh1");
+    strcpy(screenItems[4].caption,"ml1");
+    strcpy(screenItems[5].caption,"hh2");
+    strcpy(screenItems[6].caption,"ml2");
+    strcpy(screenItems[7].caption,"void");
+
+    /*screenItems[1].status=SCREEN_ITEM_STATUS_UPDATED;
+    screenItems[1].x=10;
+    screenItems[1].y=1;
+    screenItems[1].value=16;
+    sprintf(screenItems[1].strContent,"item %3d", screenItems[1].value);
+
+    screenItems[2].status=SCREEN_ITEM_STATUS_UPDATED;
+    screenItems[2].x=10;
+    screenItems[2].y=2;
+    screenItems[2].value=16;
+    sprintf(screenItems[2].strContent,"item %3d", screenItems[2].value);
+
+    screenItems[3].status=SCREEN_ITEM_STATUS_UPDATED;
+    screenItems[3].x=10;
+    screenItems[3].y=3;
+    screenItems[3].value=16;
+    sprintf(screenItems[3].strContent,"item %3d", screenItems[3].value);*/
+
+
+
+    while(1)
+    {
+        if(timeFromLastTouchSensor<10)
+        {
+            PORTBbits.RB14=1;
+        }
+        else
+        {
+           PORTBbits.RB14=0;
+        }
+
+
+        blockingWaitMs(100);
+
+
+        touchResults[0]=readTouch(0);
+        touchResults[1]=readTouch(1);
+        touchResults[2]=readTouch(2);
+
+        //select display item according to middle capacitive sensor
+        if(touchResults[1]<touchIdle[1]-5)
+        {
+            timeFromLastTouchSensor=0;
+            screenSelectedItemNo++;
+            if(screenSelectedItemNo>=SCREEN_NUMBER_OF_ITEMS)
+                screenSelectedItemNo=0;
+        }
+
+        //copy RTC to screen items to allow modifications
+        screenItems[0].value=rtc.second;
+        screenItems[1].value=rtc.minute;
+        screenItems[2].value=rtc.hour;
+
+        if(touchResults[0]<touchIdle[0]-5)
+        {
+            timeFromLastTouchSensor=0;
+            screenItems[screenSelectedItemNo].value++;
+        }
+
+        if(touchResults[2]<touchIdle[2]-5)
+        {
+            timeFromLastTouchSensor=0;
+            screenItems[screenSelectedItemNo].value--;
+        }
+        /*
+        //copy screen items to RTC to save changes (if modified by user)
+        rtc.second=screenItems[0].value;
+        rtc.minute=screenItems[1].value;
+        rtc.hour=screenItems[2].value;
+
+        //ustaw flage w itemie wybranym przez screenSelectedItemNo
+        for(i=0;i<SCREEN_NUMBER_OF_ITEMS;i++)
+        {
+            if(i==screenSelectedItemNo)
+                screenItems[i].status|=SCREEN_ITEM_STATUS_SELECTED;
+            else
+                screenItems[i].status&=~SCREEN_ITEM_STATUS_SELECTED;
+            sprintf(screenItems[i].strContent,"%s %3d",screenItems[i].caption, screenItems[i].value);
+            //sprintf(screenItems[i].strContent,"item %3d", screenItems[i].value);
+        }
+
+        //display content
+        for(i=0;i<SCREEN_NUMBER_OF_ITEMS;i++)
+        {
+                lcdGoToXY(screenItems[i].x,screenItems[i].y);
+                if(screenItems[i].status&SCREEN_ITEM_STATUS_SELECTED)
+                    numberOfDisplayedCharacters=lcdPutString(screenItems[i].strContent,0xFF);
+                else
+                    numberOfDisplayedCharacters=lcdPutString(screenItems[i].strContent,0);
+
+                //a potem wyswietl spacje zeby uniknac duchow ktore pochodza z niewiadomo kad
+                for(fillingSpaces=0; fillingSpaces<20-numberOfDisplayedCharacters; fillingSpaces++)
+                    lcdPutChar(' ',0x00);
+        }
+        */
+
+
+#define SCREEN_ITEM_STATUS_UPDATED  (1<<0)
+#define SCREEN_ITEM_STATUS_SELECTED (1<<1)
+
+#define SCREEN_NUMBER_OF_ITEMS      (8)
+
+typedef struct
+{
+    char x;
+    char y;
+    char status;
+    char strContent[10];
+    char caption[8];
+    char value;
+}screen_item_s;
+
+
+
+    char numberOfDisplayedCharacters;
+    char fillingSpaces;
+    char strBuf[10];
+    int touchResults[3];
+    int touchIdle[3];
+    char i;
+    screen_item_s screenItems[8];
+    char screenSelectedItemNo=0;
+
+
+
+ /* asm volatile("push w7");
+    asm volatile("push w8");
+    asm volatile("disi #5");
+    asm volatile("mov #0x55, w7");
+    asm volatile("mov w7, _NVMKEY");
+    asm volatile("mov #0xAA, w8");
+    asm volatile("mov w8, _NVMKEY");
+    asm volatile("bset _RCFGCAL, #13"); //set the RTCWREN bit
+    asm volatile("pop w8");
+    asm volatile("pop w7");
+
+    ALCFGRPTbits.ARPT=0x01;
+    ALCFGRPTbits.CHIME=1; //unlimited number of alarms
+    ALCFGRPTbits.AMASK=1; //alarm every 1[s]
+    RCFGCALbits.RTCEN=1;
+    IPC15bits.RTCIP=2;
+    IFS3bits.RTCIF=0;
+    IEC3bits.RTCIE=1;     //RTC interrupt enabled
+    ALCFGRPTbits.ALRMEN=1;//alarm enabled */
+
+
+
+::::::::::::::::
+w miare fajnie dzialajaca petla glowna ale bez procedury odblokowywania ekranu
+
+if(backlightTimeout<BACKLIGHT_TIMEOUT)
+        {
+            PORTBbits.RB14=1; //in active mode
+            PR1=1600;
+        }
+        else
+        {
+            PORTBbits.RB14=0; //in stand by mode
+            PR1=6400;
+        }
+
+        if(bTimingFlagTouch)
+        {
+            bTimingFlagTouch=0;
+            __delay_us(200);     //without this delay touchsensors measure wrong values, probably RC oscillator is not stable right after turning it on
+            serveTouch();
+            currentTouchState=touchGetState(0);
+            if(currentTouchState==TOUCH_STATUS_PRESSED && previousTouchState[0]==TOUCH_STATUS_NOT_PRESSED)
+            {
+                incrementSelected();
+                backlightTimeout=0;
+            }
+            previousTouchState[0]=currentTouchState;
+
+            currentTouchState=touchGetState(1);
+            if(currentTouchState==TOUCH_STATUS_PRESSED && previousTouchState[1]==TOUCH_STATUS_NOT_PRESSED)
+            {
+                actionOnPlusButton();
+                backlightTimeout=0;
+            }
+            previousTouchState[1]=currentTouchState;
+
+            currentTouchState=touchGetState(2);
+            if(currentTouchState==TOUCH_STATUS_PRESSED && previousTouchState[2]==TOUCH_STATUS_NOT_PRESSED)
+            {
+                actionOnMinusButton();
+                backlightTimeout=0;
+            }
+            previousTouchState[2]=currentTouchState;
+
+            clockSwitch(NOSC_LPRC);
+            updateScreen();
+        }
+        if(bTimingFlagRTC)
+        {
+
+            RtccReadTimeDate(&RtccTimeDate);
+            if(schedulerGetItemStatus(schedulerItem,RtccTimeDate))
+            {
+
+                //TODO opakoj przelaczanie pomiedzy trybem oszczednym a aktywnym w funkcje
+                PORTBbits.RB14=1; //in active mode
+                PR1=1600;
+                backlightTimeout=0;
+            }
+            bTimingFlagRTC=0;
+            clockSwitch(NOSC_LPRC);
+            updateScreen();
+        }
