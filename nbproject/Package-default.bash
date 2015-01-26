@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/panel4.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=panel4.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=panel4/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/software.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=software.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=software/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/panel4/bin
+makeDirectory ${TMPDIR}/software/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/panel4.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/software.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/panel4.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/software.tar *
 checkReturnCode
 
 # Cleanup

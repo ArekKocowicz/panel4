@@ -6,7 +6,7 @@
 #include "config.h"
 #include "clockSwitch.h"
 #include "touch.h"
-#include "common.h"
+#include "config.h"
 #include "adc.h"
 #include "scheduler.h"
 #include "displayInterface.h"
@@ -18,8 +18,6 @@ _CONFIG1(FWDTEN_OFF & GCP_OFF);
 _CONFIG2(FNOSC_LPRC & PLL96MHZ_OFF & PLLDIV_DIV2 & IESO_OFF & FCKSM_CSECMD & OSCIOFNC_OFF & POSCMOD_NONE);
 _CONFIG3(SOSCSEL_SOSC);
 _CONFIG4(RTCOSC_SOSC);
-
-#define BACKLIGHT_TIMEOUT (30)
 
 char bTimingFlagRTC=0;
 char bTimingFlagTouch=0;

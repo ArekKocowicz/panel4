@@ -8,7 +8,6 @@
       <itemPath>font.h</itemPath>
       <itemPath>touch.h</itemPath>
       <itemPath>adc.h</itemPath>
-      <itemPath>common.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
