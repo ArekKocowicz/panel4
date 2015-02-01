@@ -1,25 +1,7 @@
 #define MODULE_SCHEDULER
 #include "scheduler.h"
 
-uint32_t divide(uint32_t dividend, uint32_t divisor)
-{
-    uint8_t i;
-    uint32_t remainder;
 
-    if (divisor == 0)
-        return (0);
-
-    remainder = 0;
-    for (i = 0; i < (sizeof(uint32_t)*8); i++)
-    {
-        remainder <<= 1;
-        remainder += (dividend >> ((sizeof(uint32_t)*8) - 1)) & 1;
-        dividend <<= 1;
-        if (remainder >= divisor)
-            remainder -= divisor;
-    }
-    return remainder;
-}
 
 int schedulerGetItemStatus(scheduler_item_t item, rtccTimeDate now)
 {

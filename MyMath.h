@@ -1,5 +1,8 @@
+#include <stdint.h>
+
 #ifndef MODULE_MY_MATH
 
+extern uint32_t divide(uint32_t dividend, uint32_t divisor);
 extern unsigned char MyMathBcdToByte(unsigned char bcd);
 extern unsigned char MyMathByteToBcd(unsigned char i);
 extern void MyMathIncrement24(char * input);
@@ -12,6 +15,7 @@ extern void MyMathDecrement60(char * input);
 
 #ifdef MODULE_MY_MATH
 
+uint32_t divide(uint32_t dividend, uint32_t divisor);
 unsigned char MyMathBcdToByte(unsigned char bcd);
 unsigned char MyMathByteToBcd(unsigned char i);
 void MyMathIncrement24(char * input);

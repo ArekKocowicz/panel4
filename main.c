@@ -21,7 +21,6 @@ _CONFIG4(RTCOSC_SOSC);
 
 char bTimingFlagRTC=0;
 char bTimingFlagTouch=0;
-char backlightTimeout=0;
 enum touch_status_t previousTouchState[3];
 enum touch_status_t currentTouchState;
 char touchTimeSpentInThisState[3];
@@ -29,8 +28,10 @@ rtccTimeDate RtccTimeDate;
 char bUpdateScreen=0;
 int touchRefreshingPeriod;
 
-char bOpenValve;
 
+char bValveBeginOpenPeriod=0;
+char bBacklightOn=1;
+char bValveOpen=0;
 
 typedef enum
 {
@@ -72,8 +73,6 @@ void _ISR _RTCCInterrupt(void)
     clockSwitch(NOSC_FRCDIV);
     IFS3bits.RTCIF=0;
     bTimingFlagRTC=1;
-    if(backlightTimeout<BACKLIGHT_TIMEOUT)
-        backlightTimeout++;
 }
 
 void _ISR _T1Interrupt(void)
@@ -86,7 +85,7 @@ void _ISR _T1Interrupt(void)
 
 int getBacklightTimeout(void)
 {
-    //return backlightTimeout;
+    
     return lockMachine.currentState;
 }
 
@@ -120,7 +119,8 @@ void main(void)
     IEC0bits.T1IE=1;
     T1CONbits.TON=1;
    
-    PORTBbits.RB14=1;    //backlight enable
+    //PORTBbits.RB14=1;    //backlight
+    
     clockSwitch(NOSC_LPRC);
     while(1)
     {
@@ -146,7 +146,8 @@ void main(void)
             switch(lockMachine.currentState)
             {
                 case LOCKED:                    
-                    BACKLIGHT_TURN_OFF();
+                    //BACKLIGHT_TURN_OFF();
+                    bBacklightOn=0;
                     if(TOUCH_STATUS_PRESSED==touchGetState(0))
                     {
                         lockMachine.milisecondsTransition+=T1_INTERRUPT_PERIOD_MS;
@@ -164,7 +165,8 @@ void main(void)
                     }
                 break;
                 case UNLOCKING1:
-                    BACKLIGHT_TURN_ON();
+                    //BACKLIGHT_TURN_ON();
+                    bBacklightOn=1;
                     if(lockMachine.milisecondsInCurrentState>=4000 ||
                             TOUCH_STATUS_PRESSED==touchGetState(2))
                     {
@@ -188,7 +190,8 @@ void main(void)
                     }
                 break;
                 case UNLOCKING2:
-                    BACKLIGHT_TURN_ON();
+                    //BACKLIGHT_TURN_ON();
+                    bBacklightOn=1;
                     if(lockMachine.milisecondsInCurrentState>=4000 ||
                             TOUCH_STATUS_PRESSED==touchGetState(0))
                     {
@@ -212,7 +215,8 @@ void main(void)
                     }
                 break;
                 case UNLOCKED:
-                    BACKLIGHT_TURN_ON();
+                    //BACKLIGHT_TURN_ON();
+                    bBacklightOn=1;
                     if(lockMachine.milisecondsInCurrentState>=30000)
                     {
                         lockMachine.currentState=LOCKED;
@@ -255,17 +259,42 @@ void main(void)
             bTimingFlagRTC=0;
             RtccReadTimeDate(&RtccTimeDate);
             if(schedulerGetItemStatus(schedulerItem,RtccTimeDate))
-                bOpenValve=1;
+                bValveBeginOpenPeriod=1;
             else
-                bOpenValve=0;
+                bValveBeginOpenPeriod=0;
 
-            if(valveServeEverySecond(bOpenValve)==1)
-                VALVE_TURN_ON();
+            if(valveServeEverySecond(bValveBeginOpenPeriod)==1)
+            {
+                bValveOpen=1;
+                //BOOST_TURN_ON();
+                //VALVE_TURN_ON();
+            }
             else
-                VALVE_TURN_OFF();
+            {
+                bValveOpen=0;
+                //BOOST_TURN_OFF();
+                //VALVE_TURN_OFF();
+            }
             updateScreen();
             clockSwitch(NOSC_LPRC);
         }
+
+
+//valve and LCB backlight are supplied from the same boost power domain so
+//if valve should be open or backlight should be on boost must be enabled.
+
+        if(bBacklightOn||bValveOpen)
+            BOOST_TURN_ON();
+        else
+            BOOST_TURN_OFF();
+        if(bBacklightOn)
+            BACKLIGHT_TURN_ON();
+        else
+            BACKLIGHT_TURN_OFF();
+        if(bValveOpen)
+            VALVE_TURN_ON();
+        else
+            VALVE_TURN_OFF();
     }
 }
 

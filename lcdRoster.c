@@ -173,6 +173,15 @@ void lcdRosterInit(void)
     screenItems[17].previousValue=-1;
     screenItems[17].visible=1;
 
+    screenItems[18].decrementer=nothing;
+    screenItems[18].incrementer=nothing;
+    screenItems[18].getter=valveGetOpenTimer;
+    screenItems[18].x=100;
+    screenItems[18].y=0;
+    screenItems[18].screenLength=3;
+    screenItems[18].previousValue=-1;
+    screenItems[18].visible=1;
+
 }
 
 void incrementSelected(void)

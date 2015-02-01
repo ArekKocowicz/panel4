@@ -1,7 +1,7 @@
 #define MODULE_ADC
 
 #include <p24FJ64GB004.h>
-#include "common.h"
+#include "config.h"
 #include "adc.h"
 
 

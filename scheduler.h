@@ -40,7 +40,6 @@ extern void schedulerInit(void);
 
 scheduler_item_t schedulerItem;
 
-uint32_t divide(uint32_t dividend, uint32_t divisor);
 int schedulerGetItemStatus(scheduler_item_t item, rtccTimeDate now);
 void schedulerInit(void);
 

@@ -3,7 +3,7 @@
 #include <p24FJ64GB004.h>
 #include "touch.h"
 #include "adc.h"
-#include "common.h"
+#include "config.h"
 
 int getTouch0(void)
 {
